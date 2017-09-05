@@ -10,7 +10,7 @@ class ServerTh(Thread):
     def __init__(self, tk_ui, host, port):
         Thread.__init__(self)
         self.s = socket.socket()
-        self.host = socket.gethostname()
+        self.host = str(host)
         self.port = 6669
         self.s.bind((self.host, self.port))
         self.file_bd = open('conversas.txt','a')
@@ -36,18 +36,20 @@ class ServerTh(Thread):
             self.file_bd.write(msg_to_write)
             c.send('mensagem recebida: ' + msg_final[1])
         c.close()
+	sys.exit()
 
 
 class GUI_TK(Thread):
-    def __init__(self,myport):
+    def __init__(self,myport,other_host):
         Thread.__init__(self)
         self.port = myport
+	self.host = str(other_host)
 
 
     def send_message(self):
         s = socket.socket()
-        host = socket.gethostname()
-        port = 6667
+        host = self.host
+        port = self.port
         s.connect((host, port))
         print host
         print s.recv(1024)
@@ -56,6 +58,7 @@ class GUI_TK(Thread):
 
     def callback(self):
         self.master.quit()
+	sys.exit()
         raise SystemExit
 
     def run(self):
@@ -76,8 +79,9 @@ class GUI_TK(Thread):
 
 
 if __name__ == "__main__":
-    client = GUI_TK(int(sys.argv[3]))
+    client = GUI_TK(int(sys.argv[3]), sys.argv[4])
     client.start()
     server = ServerTh(client, sys.argv[1], int(sys.argv[2]))
     server.start()
+    sys.exit()
 
