@@ -83,9 +83,9 @@ class GUI_TK(Thread):
 
 
 if __name__ == "__main__":
-    client = GUI_TK(int(sys.argv[3]), sys.argv[4])
+    client = GUI_TK(str(sys.argv[3]), sys.argv[4])
     client.start()
-    server = ServerTh(client, sys.argv[1], int(sys.argv[2]))
+    server = ServerTh(client, sys.argv[1], str(sys.argv[2]))
     server.start()
     sys.exit()
 
