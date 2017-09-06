@@ -56,7 +56,7 @@ class GUI_TK(Thread):
         print s.recv(1024)
         s.send(self.e1.get() + ';' + self.e2.get())
         msg_sent = '%s:    %s' % (str(self.e1.get()), str(self.e2.get()))
-        self.e3.insert(END,str(msg_temp + '\n'))
+        self.e3.insert(END,str(msg_sent + '\n'))
         self.e2.delete(0,'end')
         s.close()
 
