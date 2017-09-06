@@ -29,7 +29,8 @@ class ServerTh(Thread):
             print msg_recebida
             msg_final = msg_recebida.split(';')
             print msg_final
-            self.ui.e3.insert(END,str(msg_final[1]) + '\n')
+            msg_temp = '%s:    %s' % (msg_final[0],msg_final[1])
+            self.ui.e3.insert(END,str(msg_temp + '\n'))
             self.ui.e3.see(END)
             new_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S\n")
             msg_to_write = '%s;%s;%s' % (msg_final[0],msg_final[1],new_date)
@@ -54,6 +55,9 @@ class GUI_TK(Thread):
         print host
         print s.recv(1024)
         s.send(self.e1.get() + ';' + self.e2.get())
+        msg_sent = '%s:    %s' % (str(self.e1.get()), str(self.e2.get()))
+        self.ui.e3.insert(END,str(msg_temp + '\n'))
+        self.ui.e2.delete(0,'end')
         s.close()
 
     def callback(self):
