@@ -11,7 +11,7 @@ class ServerTh(Thread):
         Thread.__init__(self)
         self.s = socket.socket()
         self.host = str(host)
-        self.port = 6669
+        self.port = port
         self.s.bind((self.host, self.port))
         self.file_bd = open('conversas.txt','a')
         self.ui = tk_ui
@@ -56,8 +56,8 @@ class GUI_TK(Thread):
         print s.recv(1024)
         s.send(self.e1.get() + ';' + self.e2.get())
         msg_sent = '%s:    %s' % (str(self.e1.get()), str(self.e2.get()))
-        self.ui.e3.insert(END,str(msg_temp + '\n'))
-        self.ui.e2.delete(0,'end')
+        self.e3.insert(END,str(msg_temp + '\n'))
+        self.e2.delete(0,'end')
         s.close()
 
     def callback(self):
