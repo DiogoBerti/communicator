@@ -10,48 +10,61 @@ class ServerTh(Thread):
     def __init__(self, tk_ui, host, port):
         Thread.__init__(self)
         self.s = socket.socket()
-        self.host = str(host)
-        self.port = port
+        self.host = '192.168.16.235' 
+        self.port = 6669
         self.s.bind((self.host, self.port))
         self.file_bd = open('conversas.txt','a')
         self.ui = tk_ui
+        print self.ui.running
 
 
     def run(self):
-        self.s.listen(5)
-
-        print "Server Iniciado"
         while True:
-            c, addr = self.s.accept()
-            print 'Got connection from', addr
-            c.send('Thank you for connecting')
-            msg_recebida = str(c.recv(1024))
-            print msg_recebida
-            msg_final = msg_recebida.split(';')
-            print msg_final
-            msg_temp = '%s:    %s' % (msg_final[0],msg_final[1])
-            self.ui.e3.insert(END,str(msg_temp + '\n'))
-            self.ui.e3.see(END)
-            new_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S\n")
-            msg_to_write = '%s;%s;%s' % (msg_final[0],msg_final[1],new_date)
-            self.file_bd.write(msg_to_write)
-            c.send('mensagem recebida: ' + msg_final[1])
-        c.close()
-	sys.exit()
+            try:
+                self.s.settimeout(10)
+                self.s.listen(5)
+                print "Server Iniciado"
+            except:
+                print "____"
+                pass
+            
+            else:
+                if self.ui.running == True:
+                    c, addr = self.s.accept()
+                    print 'Got connection from', addr
+                    c.send('Thank you for connecting')
+                    msg_recebida = str(c.recv(1024))
+                    print msg_recebida
+                    msg_final = msg_recebida.split(';')
+                    print msg_final
+                    msg_temp = '%s:    %s' % (msg_final[0],msg_final[1])
+                    self.ui.e3.insert(END,str(msg_temp + '\n'))
+                    self.ui.e3.see(END)
+                    new_date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S\n")
+                    msg_to_write = '%s;%s;%s' % (msg_final[0],msg_final[1],new_date)
+                    self.file_bd.write(msg_to_write)
+                    c.send('mensagem recebida: ' + msg_final[1])
+                else:
+                    print "Desligando"
+                    c.close()
+                    self.s.close()
+                    sys.exit()
+                    break
 
+        
 
 class GUI_TK(Thread):
     def __init__(self,myport,other_host):
         Thread.__init__(self)
-        self.port = myport
-	self.host = str(other_host)
-
+        self.port = 6667
+	self.host = '192.168.16.80'
+        self.running = True
 
     def send_message(self):
         s = socket.socket()
         host = self.host
         port = self.port
-        s.connect((host, port))
+        s.connect((self.host,self.port))
         print host
         print s.recv(1024)
         s.send(self.e1.get() + ';' + self.e2.get())
@@ -61,6 +74,9 @@ class GUI_TK(Thread):
         s.close()
 
     def callback(self):
+        print "Quiting"
+        self.running = False
+        self.master.destroy()
         self.master.quit()
         raise SystemExit
 
