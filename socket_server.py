@@ -35,13 +35,11 @@ class ThreadedServer(object):
                 return False
 
 if __name__ == "__main__":
-    while True:
-        port_num = input("Port? ")
-        try:
-            port_num = int(port_num)
-            break
-        except ValueError:
-            pass
+    port_num = input("Port? ")
+    try:
+        port_num = int(port_num)
+    except ValueError:
+        raise
 
     ThreadedServer('',port_num).listen()
 

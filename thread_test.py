@@ -21,7 +21,6 @@ class ServerTh(Thread):
     def run(self):
         while True:
             try:
-                self.s.settimeout(10)
                 self.s.listen(5)
                 print "Server Iniciado"
             except:
@@ -30,6 +29,7 @@ class ServerTh(Thread):
             
             else:
                 if self.ui.running == True:
+                    print "ui is running?" + str(self.ui.running)
                     c, addr = self.s.accept()
                     print 'Got connection from', addr
                     c.send('Thank you for connecting')
@@ -44,11 +44,12 @@ class ServerTh(Thread):
                     msg_to_write = '%s;%s;%s' % (msg_final[0],msg_final[1],new_date)
                     self.file_bd.write(msg_to_write)
                     c.send('mensagem recebida: ' + msg_final[1])
-                else:
-                    print "Desligando"
                     c.close()
+            
+                else:
                     self.s.close()
                     sys.exit()
+
                     break
 
         
@@ -57,7 +58,7 @@ class GUI_TK(Thread):
     def __init__(self,myport,other_host):
         Thread.__init__(self)
         self.port = 6667
-	self.host = '192.168.16.80'
+	self.host = '192.168.16.63'
         self.running = True
 
     def send_message(self):
